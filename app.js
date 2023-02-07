@@ -30,22 +30,22 @@ function ask(question) {
 }
 
 const main = async () => {
-    const nama = await ask('Nama? ');
-    const email = await ask('Email? ');
-    const notelp = await ask('NoTelp? ');
-    if (!validator.isEmail(email)) {
+    let nama = await ask('Nama? ');
+    let email = await ask('Email? ');
+    let notelp = await ask('NoTelp? ');
+    while (!validator.isEmail(email)) {
         console.log('Email anda tidak valid!');
-        rl.close();
-    } else if (!validator.isMobilePhone(notelp, 'id-ID')) {
-        console.log('NoTelp anda tidak valid!');
-        rl.close();
-    } else {
-        console.log(`Terimakasih ${nama} sudah memasukkan data!`);
-        const data = JSON.parse(fs.readFileSync(dataPath, 'utf-8'));
-        data.push({ nama, email, notelp });
-        fs.writeFileSync(dataPath, JSON.stringify(data));
-        rl.close();
+        email = await ask('Email? ');
     }
+    while (!validator.isMobilePhone(notelp, 'id-ID')) {
+        console.log('NoTelp anda tidak valid!');
+        notelp = await ask('NoTelp? ');
+    }
+    console.log(`Terimakasih ${nama} sudah memasukkan data!`);
+    const data = JSON.parse(fs.readFileSync(dataPath, 'utf-8'));
+    data.push({ nama, email, notelp });
+    fs.writeFileSync(dataPath, JSON.stringify(data));
+    rl.close();
 }
 
 main();
