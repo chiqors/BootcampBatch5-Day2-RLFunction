@@ -1,5 +1,6 @@
 const readline = require('readline');
 const fs = require('fs');
+const validator = require('validator');
 
 const rl = readline.createInterface({
     input: process.stdin,
@@ -32,10 +33,19 @@ const main = async () => {
     const nama = await ask('Nama? ');
     const email = await ask('Email? ');
     const notelp = await ask('NoTelp? ');
-    const data = JSON.parse(fs.readFileSync(dataPath, 'utf-8'));
-    data.push({ nama, email, notelp });
-    fs.writeFileSync(dataPath, JSON.stringify(data));
-    rl.close()
+    if (!validator.isEmail(email)) {
+        console.log('Email anda tidak valid!');
+        rl.close();
+    } else if (!validator.isMobilePhone(notelp, 'id-ID')) {
+        console.log('NoTelp anda tidak valid!');
+        rl.close();
+    } else {
+        console.log(`Terimakasih ${nama} sudah memasukkan data!`);
+        const data = JSON.parse(fs.readFileSync(dataPath, 'utf-8'));
+        data.push({ nama, email, notelp });
+        fs.writeFileSync(dataPath, JSON.stringify(data));
+        rl.close();
+    }
 }
 
 main();
